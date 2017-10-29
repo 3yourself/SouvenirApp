@@ -32,7 +32,7 @@ export default class App extends Component<{}> {
     //this.state.lastMessage = { text: 'Initial', id: '00001'};
     //this.state.messages.push(this.state.lastMessage);
   }
-  
+
   componentWillMount(){
     /* Create reference to messages in Firebase Database */
     let messagesRef = fire.database().ref('users/' + this.state.userID + '/messages').orderByKey().limitToLast(100);
@@ -52,61 +52,61 @@ export default class App extends Component<{}> {
     /* Send the message to Firebase */
     fire.database().ref('users/' + this.state.userID + '/messages').push(this.state.someText);
     this.setState({someText: 'Edit Me ' + this.state.i}) // <- clear the input
-  }	
-  
+  }
+
   purgeData = () => {
 	fire.database().ref('users/' + this.state.userID + '/messages').remove();
 	this.setState({messages: []});
   }
-  
+
   getList = () => {
 	  if (this.state.messages[0] == null) return null
 	  else {
 		//console.warn('getList called. Array size: ' + this.state.messages.length);
-		
+
 		let list = '';
-		
+
 		list = <FlatList
 				data={this.state.messages}
 				extraData={this.state}
 				renderItem={({item}) => <Text>{item.text}, {item.id}, {item.key}}</Text>}
 			/>;
-		
+
 		//console.warn(list);
-		
+
 		return list;
 		;
 	  }
   }
-     
-  
+
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
 			Welcome. Input smth!
         </Text>
-		<TextInput 
-			style={styles.hello} 
+		<TextInput
+			style={styles.hello}
 			onChangeText={(text) => this.setState({someText: text})}
 			value={this.state.someText}
 		/>
-		
+
 		<TouchableOpacity onPress={this.addMessage}>
 			<Text style={styles.button1}>PUSH TO DB </Text>
 		</TouchableOpacity >
 
 		<TouchableOpacity onPress={this.purgeData}>
 			<Text style={styles.button1}>PURGE DB </Text>
-		</TouchableOpacity >		
-			
+		</TouchableOpacity >
+
 		{this.getList()}
 
       </View>
     );
   }
 }
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
   hello: {
     fontSize: 16,
     width: 200,
-  },  
-  
+  },
+
   button1: {
     margin : 20,
 	width: 150,
@@ -133,10 +133,12 @@ const styles = StyleSheet.create({
 	textAlign : 'center',
 	margin: 5,
 	fontSize: 20,
-  },    
+  },
   instructions: {
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
   },
 });
+
+export default HomeScreen;
