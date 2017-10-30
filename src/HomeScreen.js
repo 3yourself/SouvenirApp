@@ -25,7 +25,7 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-export default class App extends Component<{}> {
+export default class HomeScreen extends Component<{}> {
   constructor(props) {
     super(props);
     this.state = { messages: [], i : 0, someText: 'Edit Me ' + 0, userID: 100000}; // <- set up react state
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+

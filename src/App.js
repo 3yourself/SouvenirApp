@@ -23,7 +23,7 @@ state = { loggedIn: null };
 
 componentWillMount() {
   //This method is only called one time, which is before the initial render
-
+/*
   firebase.initializeApp({
     apiKey: "AIzaSyBryPWu4k13ObP5cwpAUrPEjl5c4y9CMx4",
     authDomain: "souvenir-5000d.firebaseapp.com",
@@ -31,13 +31,14 @@ componentWillMount() {
     projectId: "souvenir-5000d",
     storageBucket: "souvenir-5000d.appspot.com",
     messagingSenderId: "355140365107"
-    /*apiKey: 'AIzaSyCRloEDqXpz9IWWRSCBp6-IKMcTbI6yMs0',
+    apiKey: 'AIzaSyCRloEDqXpz9IWWRSCBp6-IKMcTbI6yMs0',
     authDomain: 'authentication-71c27.firebaseapp.com',
     databaseURL: 'https://authentication-71c27.firebaseio.com',
     projectId: 'authentication-71c27',
     storageBucket: 'authentication-71c27.appspot.com',
-    messagingSenderId: '327514374758'*/
+    messagingSenderId: '327514374758'
 });
+*/
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
