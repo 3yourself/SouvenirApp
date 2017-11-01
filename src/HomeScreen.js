@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import fire from './fire';
+import LoginForm from './LoginForm';
 
 import {
   Platform,
@@ -17,6 +18,8 @@ import {
   TouchableOpacity ,
   FlatList
 } from 'react-native';
+import FBSDK, { LoginButton } from 'react-native-fbsdk';
+
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -79,6 +82,9 @@ export default class HomeScreen extends Component<{}> {
 	  }
   }
 
+  onLogOutSucess() {
+    return <LoginForm/>;
+    }
 
   render() {
     return (
@@ -99,6 +105,12 @@ export default class HomeScreen extends Component<{}> {
 		<TouchableOpacity onPress={this.purgeData}>
 			<Text style={styles.button1}>PURGE DB </Text>
 		</TouchableOpacity >
+
+    <LoginButton
+      onLogoutFinished={() =>
+        fire.auth().signOut()
+        .then(this.onLogOutSucess.bind(this))
+        }/>
 
 		{this.getList()}
 
@@ -140,5 +152,3 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-

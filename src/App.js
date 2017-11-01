@@ -17,7 +17,6 @@ import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk';
 import firebase from 'firebase';
 import { Spinner } from './common';
 
-
 class App extends Component {
 state = { loggedIn: null };
 
@@ -52,16 +51,7 @@ firebase.auth().onAuthStateChanged((user) => {
 renderContent() {
     switch (this.state.loggedIn) {
       case true:
-        return (
-        //Move to home screen
-        <View>
-          return <HomeScreen />;
-        /*
-          <TouchableOpacity onPress={() => firebase.auth().signOut()}>
-            <Text>Log Out</Text>
-          </TouchableOpacity>*/
-        </View>
-      );
+        return <HomeScreen />;
       case false:
         return <LoginForm />;
       default:

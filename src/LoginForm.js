@@ -11,57 +11,40 @@ import {
   TouchableOpacity
  } from 'react-native';
 import firebase from 'firebase';
-import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk';
+import FBSDK, { LoginManager, AccessToken,  LoginButton } from 'react-native-fbsdk';
 
 class LoginForm extends Component {
-
-state = { loggedIn: null, loading: false };
-
-  fbAuth() {
-    LoginManager.logInWithReadPermissions(['public_profile']).then
-    //(this.onLoginSucess.bind(this))
-      (function(result) {
-        if (result.isCancelled) {
-          alert('Login cancelled');
-        } else {
-          AccessToken.getCurrentAccessToken().then((accessTokenData) => {
-            const credential = firebase.auth.FacebookAuthProvider.credential(accessTokenData.accessToken)
-            firebase.auth().signInWithCredential(credential).then((result) => {
-              // promise was successful
-            }, (error) => {
-              console.log(error)
-            })
-          }, (error => {
-              console.log('Something went wrong: ' + error)
-          }))
-        }
-    },
-      function(error) {
-        alert('Something went wrong: ' + error);
-      }
-  );
-}
-
-onLoginFail() {
-  this.setState({
-    loading: false,
-    error: 'Authentication Failed.'
-  });
-}
-
-onLoginSucess() {
-    this.setState({
-      loading: false,
-      errror: ''
-    });
-  }
 
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.fbAuth.bind(this)}>
-          <Text>facebook</Text>
-          </TouchableOpacity>
+        <TouchableOpacity>
+          <LoginButton
+            readPermissions={["public_profile", 'email']}
+            onLoginFinished={
+              (error, result) => {
+                if (error) {
+                  alert("Login failed with error: " + result.error);
+                } else if (result.isCancelled) {
+                  alert("Login was cancelled");
+                } else {
+                    AccessToken.getCurrentAccessToken().then((accessTokenData) => {
+                      const credential = firebase.auth.FacebookAuthProvider.credential(accessTokenData.accessToken)
+                      firebase.auth().signInWithCredential(credential)
+                      .then((result) => {
+                        //sucess
+                      }, (error) => {
+                        console.log(error)
+                      })
+                    }, (error => {
+                        console.log('Something went wrong: ' + error)
+                    }))
+                  }
+          }
+        }
+        //onLogoutFinished={() => alert("logout.")}
+        />
+        </TouchableOpacity>
       </View>
     );
   }
