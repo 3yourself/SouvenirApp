@@ -1,72 +1,53 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
 import React, { Component } from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity
- } from 'react-native';
-import firebase from 'firebase';
-import FBSDK, { LoginManager, AccessToken,  LoginButton } from 'react-native-fbsdk';
+import { Text } from 'react-native';
+import { connect } from 'react-redux';
+import { emailChanged, passwordChanged, loginUser } from './actions';
+import { Card, Button, CardSection, Spinner } from './common';
 
 class LoginForm extends Component {
+  onButtonPress() {
+    this.props.loginUser();
+  }
+
+  renderButton() {
+    if (this.props.loading) {
+      return <Spinner size="large" />;
+    }
+
+    return (
+      <Button onPress={this.onButtonPress.bind(this)}>
+        Facebook
+      </Button>
+    );
+  }
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity>
-          <LoginButton
-            readPermissions={["public_profile", 'email']}
-            onLoginFinished={
-              (error, result) => {
-                if (error) {
-                  alert("Login failed with error: " + result.error);
-                } else if (result.isCancelled) {
-                  alert("Login was cancelled");
-                } else {
-                    AccessToken.getCurrentAccessToken().then((accessTokenData) => {
-                      const credential = firebase.auth.FacebookAuthProvider.credential(accessTokenData.accessToken)
-                      firebase.auth().signInWithCredential(credential)
-                      .then((result) => {
-                        //sucess
-                      }, (error) => {
-                        console.log(error)
-                      })
-                    }, (error => {
-                        console.log('Something went wrong: ' + error)
-                    }))
-                  }
-          }
-        }
-        //onLogoutFinished={() => alert("logout.")}
-        />
-        </TouchableOpacity>
-      </View>
+      <Card>
+        <Text style={styles.errorTextStyle}>
+          {this.props.error}
+        </Text>
+
+        <CardSection>
+          {this.renderButton()}
+        </CardSection>
+      </Card>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
+const styles = {
+  errorTextStyle: {
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+    alignSelf: 'center',
+    color: 'red'
+  }
+};
 
-export default LoginForm;
+const mapStateToProps = ({ auth }) => {
+  const { error, loading } = auth;
+
+  return { error, loading };
+};
+
+export default connect(mapStateToProps, { loginUser })(LoginForm);
