@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { emailChanged, passwordChanged, loginUser } from './actions';
 import { Button, CardSection, Spinner } from './common';
 
@@ -15,34 +16,37 @@ class LoginForm extends Component {
     }
 
     return (
-      <Button onPress={this.onButtonPress.bind(this)}>
-        Facebook
-      </Button>
+      <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.onButtonPress.bind(this)}>
+        Login with Facebook
+      </Icon.Button>
     );
   }
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
+        {this.renderButton()}
         <Text style={styles.errorTextStyle}>
           {this.props.error}
         </Text>
-
-        <CardSection>
-          {this.renderButton()}
-        </CardSection>
       </View>
     );
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   errorTextStyle: {
     fontSize: 20,
     alignSelf: 'center',
     color: 'red'
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   }
-};
+});
 
 const mapStateToProps = ({ auth }) => {
   const { error, loading } = auth;
