@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { emailChanged, passwordChanged, loginUser } from './actions';
-import { Card, Button, CardSection, Spinner } from './common';
+import { Button, CardSection, Spinner } from './common';
 
 class LoginForm extends Component {
   onButtonPress() {
@@ -23,7 +23,7 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <Card>
+      <View>
         <Text style={styles.errorTextStyle}>
           {this.props.error}
         </Text>
@@ -31,7 +31,7 @@ class LoginForm extends Component {
         <CardSection>
           {this.renderButton()}
         </CardSection>
-      </Card>
+      </View>
     );
   }
 }
