@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { emailChanged, passwordChanged, loginUser } from './actions';
-import { Button, CardSection, Spinner } from './common';
+import { loginUser } from './actions';
+import { Spinner } from './common';
 
 class LoginForm extends Component {
   onButtonPress() {

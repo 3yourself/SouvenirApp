@@ -4,7 +4,9 @@ import FBSDK, { LoginManager, AccessToken } from 'react-native-fbsdk';
 import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
-  LOGIN_USER
+  LOGIN_USER,
+  LOGOUT_USER,
+  LOGOUT_USER_SUCCESS
 } from './types';
 
 export const loginUser = () => {
@@ -21,6 +23,15 @@ export const loginUser = () => {
     };
 };
 
+export const logoutUser = () => {
+  return (dispatch) => {
+    dispatch({ type: LOGOUT_USER });
+
+     firebase.auth().signOut()
+      .then(() => logoutUserSuccess(dispatch))
+  };
+};
+
 const loginUserFail = (dispatch) => {
   dispatch({ type: LOGIN_USER_FAIL });
 };
@@ -32,4 +43,10 @@ const loginUserSuccess = (dispatch, user) => {
   });
 
   Actions.main();
+};
+
+const logoutUserSuccess = (dispatch) => {
+  dispatch({ type: LOGOUT_USER_SUCCESS });
+
+  Actions.auth();
 };

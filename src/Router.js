@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LoginForm from './LoginForm';
 import HomeScreen from './HomeScreen';
 import Gallery from './Gallery';
+import UserProfile from './UserProfile';
 
 const tabImage = ({ selected, title, iconName }) => {
     return (
@@ -16,12 +17,6 @@ const tabImage = ({ selected, title, iconName }) => {
             />
         </View>
     )
-};
-
-const TabIcon = ({ selected, title }) => {
-  return (
-    <Text style={{ color: selected ? 'red' : 'black' }}>{ title }</Text>
-  );
 };
 
 const RouterComponent = () => {
@@ -40,11 +35,14 @@ const RouterComponent = () => {
         >
           <Scene key="Home" title="Home" iconName="home" icon={tabImage}>
             <Scene
+              rightTitle="Profile"
+              onRight={() => Actions.UserProfile()}
               key="HomeScreen"
               component={HomeScreen}
               title="Souvenir"
               initial
             />
+            <Scene key="UserProfile" component={UserProfile} title="Profile" />
           </Scene>
 
           <Scene key="Share" title="Share" iconName="share" icon={tabImage}>
