@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { logoutUser } from './actions';
+import { logoutUser } from '../actions';
 import { Spinner } from './common';
 
 class UserProfile extends Component {

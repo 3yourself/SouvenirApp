@@ -1,22 +1,22 @@
 import React from 'react';
-import { Text, View } from 'react-native'
+import { View } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import LoginForm from './LoginForm';
-import HomeScreen from './HomeScreen';
-import Gallery from './Gallery';
-import UserProfile from './UserProfile';
+import LoginForm from './components/LoginForm';
+import HomeScreen from './components/HomeScreen';
+import Gallery from './components/Gallery';
+import UserProfile from './components/UserProfile';
 
-const tabImage = ({ selected, title, iconName }) => {
+const tabImage = ({ selected, iconName }) => {
     return (
         <View>
             <Icon
                 name={iconName}
-                color={selected? '#473332' : '#bdb8bc'}
+                color={selected ? '#473332' : '#bdb8bc'}
                 size={35}
             />
         </View>
-    )
+    );
 };
 
 const RouterComponent = () => {
@@ -39,7 +39,7 @@ const RouterComponent = () => {
               onRight={() => Actions.UserProfile()}
               key="HomeScreen"
               component={HomeScreen}
-              title="Souvenir"
+              title="All My Cards"
               initial
             />
             <Scene key="UserProfile" component={UserProfile} title="Profile" />

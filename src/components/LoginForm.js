@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { loginUser } from './actions';
+import { loginUser } from '../actions';
 import { Spinner } from './common';
 
 class LoginForm extends Component {
@@ -16,7 +16,9 @@ class LoginForm extends Component {
     }
 
     return (
-      <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.onButtonPress.bind(this)}>
+      <Icon.Button
+        name="facebook" backgroundColor="#3b5998" onPress={this.onButtonPress.bind(this)}
+      >
         Login with Facebook
       </Icon.Button>
     );
