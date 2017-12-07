@@ -7,12 +7,15 @@ import PostItem from './PostItem';
 
 class PostsList extends Component {
   componentWillMount() {
+    console.log('Posts props on mount: ');
+    console.log(this.props);
     this.props.postsFetch();
 
     this.createDataSource(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
+    //this.props.postsFetch();
     this.createDataSource(nextProps);
   }
 
@@ -29,7 +32,7 @@ class PostsList extends Component {
   }
 
   render() {
-    console.log(this.props);
+    //console.log(this.props);
 
     return (
       <ListView
@@ -42,11 +45,17 @@ class PostsList extends Component {
 }
 
 const mapStateToProps = state => {
-  const posts = _.map(state.posts, (val, uid) => {
+  const filteredPosts = _.filter(state.posts, (rec) => {
+     return rec.storyID === state.selectedStory.uid || !state.selectedStory.uid;
+   });
+
+  const posts = _.map(filteredPosts, (val, uid) => {
     return { ...val, uid };
   });
 
-  return { posts };
+  const selectedStoryUid = state.selectedStory.uid;
+
+  return { selectedStoryUid, posts };
 };
 
 export default connect(mapStateToProps, { postsFetch })(PostsList);

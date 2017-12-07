@@ -22,7 +22,6 @@ const tabImage = ({ selected, iconName }) => {
 const RouterComponent = () => {
   return (
     <Router>
-
       <Scene key="auth">
         <Scene key="login" component={LoginForm} title="Login" />
       </Scene>
@@ -35,22 +34,21 @@ const RouterComponent = () => {
         >
           <Scene key="Home" title="Home" iconName="home" icon={tabImage}>
             <Scene
+              key="HomeScreen"
               rightTitle="Profile"
               onRight={() => Actions.UserProfile()}
-              key="HomeScreen"
               component={HomeScreen}
               title="All My Cards"
-              initial
+
             />
             <Scene key="UserProfile" component={UserProfile} title="Profile" />
           </Scene>
 
-          <Scene key="Share" title="Share" iconName="share" icon={tabImage}>
+          <Scene key="Share" title="Share" iconName="share" icon={tabImage} initial>
             <Scene key="Gallery" component={Gallery} title="Gallery" />
           </Scene>
         </Scene>
       </Scene>
-
     </Router>
   );
 };

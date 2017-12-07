@@ -1,0 +1,20 @@
+---------------------------------------------------------
+-----------<<<<<<<<<<>>>>>>>>>>>>>>>>--------------------
+---------------------------------------------------------
+1. Do all steps from https://www.npmjs.com/package/react-native-photo-upload
+2. Add 3 lines to android/app/build.gradle -> dependencies:
+    compile project(':react-native-fs')
+    compile project(':react-native-image-picker')
+    compile project(':react-native-image-resizer')
+
+3. Eventually use this
+https://www.npmjs.com/package/react-native-image-picker#usage
+
+---------------------------------------------------------
+-----------<<<<<<<<<<>>>>>>>>>>>>>>>>--------------------
+---------------------------------------------------------
+C:\Dev\SouvenirApp\android>gradlew clean
+
+---------------------------------------------------------
+-----------<<<<<<<<<<>>>>>>>>>>>>>>>>--------------------
+---------------------------------------------------------

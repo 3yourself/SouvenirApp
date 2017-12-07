@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableHighlight } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { selectStory } from '../actions';
 
 class StoryItem extends Component {
-  onRowPress() {
-    
-  }
-
   render() {
-    const { name, link } = this.props.story;
+    const { name, link, uid } = this.props.story;
+    //console.log(this.props.story);
     return (
-      <TouchableHighlight onPress={this.onRowPress.bind(this)}>
+      <TouchableHighlight onPress={() => this.props.selectStory({ uid, name })}>
         <View style={styles.containerStyle}>
           <Image source={{ uri: link }} style={styles.imageStyle} />
           <Text style={styles.nameStyle}>{name}</Text>
@@ -41,4 +40,4 @@ const styles = {
   }
 };
 
-export default StoryItem;
+export default connect(null, { selectStory })(StoryItem);

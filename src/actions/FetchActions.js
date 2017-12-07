@@ -27,7 +27,7 @@ from './types';
 
 export const postsFetch = () => {
   const { currentUser } = firebase.auth();
-  console.log('postFetch');
+  //console.log('postFetch');
   return (dispatch) => {
         // firebase.database().ref(`/users/${currentUser.uid}/stories`)
         //   .push({ name: 'Holidays go', date: '2017-12-01', link: 'https://g1.dcdn.lt/images/pix/280x170/yDBUiujPmYc/bitkoinai-bitcoin-75811753.jpg' })
@@ -44,7 +44,7 @@ export const postsFetch = () => {
 
 export const storiesFetch = () => {
   const { currentUser } = firebase.auth();
-  console.log('storyFetch');
+  //console.log('storyFetch');
   return (dispatch) => {
         // firebase.database().ref(`/users/${currentUser.uid}/stories`)
         //   .push({ name: 'Holidays go', date: '2017-12-01', link: 'https://g1.dcdn.lt/images/pix/280x170/yDBUiujPmYc/bitkoinai-bitcoin-75811753.jpg' })
