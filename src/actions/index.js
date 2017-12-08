@@ -1,3 +1,3 @@
 export * from './AuthActions';
-export * from './FetchActions';
+export * from './DataActions';
 export * from './SelectStoryActions';

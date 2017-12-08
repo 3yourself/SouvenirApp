@@ -1,7 +1,9 @@
 import firebase from 'firebase';
-//import { Actions } from 'react-native-router-flux';
-import { POSTS_FETCH_SUCCESS, STORIES_FETCH_SUCCESS }
+import RNFetchBlob from 'react-native-fetch-blob';
+import { Actions } from 'react-native-router-flux';
+import { POSTS_FETCH_SUCCESS, STORIES_FETCH_SUCCESS, CREATE_POST_SUCCESS }
 from './types';
+
 
 // export const employeeUpdate = ({ prop, value }) => {
 //   //console.log(value + ' ' + prop);
@@ -55,6 +57,68 @@ export const storiesFetch = () => {
     firebase.database().ref(`/users/${currentUser.uid}/stories`)
       .on('value', snapshot => {
         dispatch({ type: STORIES_FETCH_SUCCESS, payload: snapshot.val() });
+      });
+  };
+};
+
+export const createPost = ({ uri, timestamp, fileName }) => {
+  const fileRef = timestamp + '__' + fileName;
+
+  const Blob = RNFetchBlob.polyfill.Blob;
+  const fs = RNFetchBlob.fs;
+
+  //God knows what is this..
+  window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+  window.Blob = Blob
+
+  let uploadBlob = null;
+  const mime = 'image/jpg';
+
+  console.log('Before disptach');
+
+  const { currentUser } = firebase.auth();
+
+  return (dispatch) => {
+    const imageRef = firebase.storage().ref('posts').child(fileRef);
+    console.log('Got ref');
+    fs.readFile(uri, 'base64')
+      .then((data) => {
+        console.log('read file');
+        return Blob.build(data, { type: `${mime};BASE64` });
+    })
+    .then((blob) => {
+        console.log('try upload', blob);
+        uploadBlob = blob;
+        return imageRef.put(blob, { contentType: mime });
+      })
+      .then(() => {
+        uploadBlob.close();
+        return imageRef.getDownloadURL();
+      })
+      .then((link) => {
+        // URL of the image uploaded on Firebase storage
+        console.log(link);
+        console.log('Uploaded a base64 string!');
+        //Push the remaining of the post
+
+        firebase.database().ref(`/users/${currentUser.uid}/posts/`)
+          .push({
+            link,
+            date: timestamp,
+            ownerID: currentUser.uid,
+            owner: 'Rick James',
+            storyID: '-L-fwtgKso0lH7yoFA2',
+            storyName: 'My Eurotrip',
+            title: 'Just Initial Title'
+          })
+          .then(() => {
+            console.log('saved');
+            dispatch({ type: CREATE_POST_SUCCESS });
+            Actions.main({ type: 'reset' });
+          });
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 };
