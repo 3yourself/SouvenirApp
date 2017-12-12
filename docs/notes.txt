@@ -20,3 +20,10 @@ C:\Dev\SouvenirApp\android>gradlew clean
 ---------------------------------------------------------
 react-native link react-native-fetch-blob
 compile project(':react-native-fetch-blob')
+
+
+---------------------------------------------------------
+-----------<<<<<<<<<<>>>>>>>>>>>>>>>>--------------------
+---------------------------------------------------------
+FB: test users:
+paxesrvmmk_1512984596@tfbnw.net / Nenervink

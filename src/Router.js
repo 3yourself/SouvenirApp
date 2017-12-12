@@ -32,20 +32,19 @@ const RouterComponent = () => {
           tabs
           tabBarStyle={{ backgroundColor: '#F0F0F0' }}
         >
-          <Scene key="Home" title="Home" iconName="home" icon={tabImage}>
+          <Scene key="home" title="Home" iconName="home" icon={tabImage} initial>
             <Scene
               key="HomeScreen"
               rightTitle="Profile"
               onRight={() => Actions.UserProfile()}
               component={HomeScreen}
               title="All My Cards"
-
             />
             <Scene key="UserProfile" component={UserProfile} title="Profile" />
           </Scene>
 
-          <Scene key="Share" title="Share" iconName="share" icon={tabImage} initial>
-            <Scene key="Gallery" component={Gallery} title="Gallery" />
+          <Scene key="share" title="Share" iconName="share" icon={tabImage} >
+            <Scene key="gallery" component={Gallery} title="Share a Card" />
           </Scene>
         </Scene>
       </Scene>

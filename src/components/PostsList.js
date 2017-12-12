@@ -7,8 +7,6 @@ import PostItem from './PostItem';
 
 class PostsList extends Component {
   componentWillMount() {
-    console.log('Posts props on mount: ');
-    console.log(this.props);
     this.props.postsFetch();
 
     this.createDataSource(this.props);
@@ -32,8 +30,6 @@ class PostsList extends Component {
   }
 
   render() {
-    //console.log(this.props);
-
     return (
       <ListView
         enableEmptySections
@@ -46,7 +42,7 @@ class PostsList extends Component {
 
 const mapStateToProps = state => {
   const filteredPosts = _.filter(state.posts, (rec) => {
-     return rec.storyID === state.selectedStory.uid || !state.selectedStory.uid;
+     return rec.storyUid === state.selectedStory.uid || !state.selectedStory.uid;
    });
 
   const posts = _.map(filteredPosts, (val, uid) => {

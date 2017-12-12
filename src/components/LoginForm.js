@@ -2,16 +2,20 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { loginUser } from '../actions';
+import { loginUser, reloginUserFirst } from '../actions';
 import { Spinner } from './common';
 
 class LoginForm extends Component {
+  componentWillMount() {
+      this.props.reloginUserFirst();
+  }
+
   onButtonPress() {
     this.props.loginUser();
   }
 
   renderButton() {
-    if (this.props.loading) {
+    if (this.props.loading || this.props.user) {
       return <Spinner size="large" />;
     }
 
@@ -51,9 +55,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = ({ auth }) => {
-  const { error, loading } = auth;
+  const { error, loading, user } = auth;
 
-  return { error, loading };
+  return { error, loading, user };
 };
 
-export default connect(mapStateToProps, { loginUser })(LoginForm);
+export default connect(mapStateToProps, { reloginUserFirst, loginUser })(LoginForm);

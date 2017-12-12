@@ -5,8 +5,9 @@ import {
 const INITIAL_STATE = {
   //Why does not it work????
   // Selected story:
-  // Id,
-  // Name
+   uid: '',
+   name: '',
+   storyGenericUid: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
