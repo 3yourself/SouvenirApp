@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
@@ -10,29 +10,90 @@ import {
   LOGIN_USER_INITIAL
 } from './types';
 
+//Get and save user info from FB
+const saveUserInfo = (error, result) => {
+  if (error) {
+    console.log('Error fetching data: ', error);
+  } else {
+    const { currentUser } = firebase.auth();
+
+    firebase.database().ref(`users/${currentUser.uid}/profile`).set({
+      facebookId: result.id,
+      firstName: result.first_name,
+      lastName: result.last_name,
+      middleName: result.middle_name,
+      email: result.email,
+      profilePicture: result.picture.data.url
+    });
+  }
+};
+
+//Get and save friends info from FB
+const saveFriendsList = (error, result) => {
+  if (error) {
+    console.log('Error fetching data: ', error);
+  } else {
+    const { currentUser } = firebase.auth();
+
+    firebase.database().ref(`users/${currentUser.uid}/fbFriends`).set(result.data);
+
+    console.log('Success fetching friends data: ', result);
+  }
+};
+
+const initializeUser = (dispatch, user) => {
+  //User request
+  const userInfoRequest = new GraphRequest(
+      '/me?fields=id,last_name,first_name,middle_name,email,picture',
+      null,
+      saveUserInfo);
+
+  //Friends request
+  const friendsListRequest = new GraphRequest(
+      '/me/friends',
+      null,
+      saveFriendsList);
+
+  //Submit request to FB
+  new GraphRequestManager()
+    .addRequest(userInfoRequest)
+    .addRequest(friendsListRequest)
+    .addBatchCallback((error, result) => {
+      if (result) loginUserSuccess(dispatch, user);
+      else loginUserFail(dispatch);
+    })
+    .start();
+};
+
+const loginFirebase = (dispatch) => {
+  AccessToken.getCurrentAccessToken()
+    .then((accessTokenData) => {
+      const credential = firebase.auth.FacebookAuthProvider
+        .credential(accessTokenData.accessToken);
+        firebase.auth().signInWithCredential(credential)
+          .then(user => {
+            //refresh user info
+            initializeUser(dispatch, user);
+          })
+          .catch(() => loginUserFail(dispatch));
+      });
+};
+
 export const loginUser = () => {
   return (dispatch) => {
     dispatch({ type: LOGIN_USER });
 
-    console.log(AccessToken);
-
-    LoginManager.logInWithReadPermissions(['public_profile'])
+    LoginManager.logInWithReadPermissions([
+      'public_profile',
+      'email',
+      'user_friends',
+      'user_about_me'
+    ])
       .then((result) => {
-        console.log(result);
         if (result.isCancelled) {
           loginUserFail(dispatch);
-        } else {
-          AccessToken.getCurrentAccessToken()
-            .then((accessTokenData) => {
-              const credential = firebase.auth.FacebookAuthProvider
-                .credential(accessTokenData.accessToken);
-                firebase.auth().signInWithCredential(credential)
-                  .then(user => {
-                    loginUserSuccess(dispatch, user);
-                  })
-                  .catch(() => loginUserFail(dispatch));
-              });
-          }
+          //go for firebase
+        } else loginFirebase(dispatch);
       });
   };
 };
@@ -44,13 +105,12 @@ export const reloginUserFirst = () => {
     AccessToken.getCurrentAccessToken()
       .then((accessTokenData) => {
         if (accessTokenData) {
-          const credential = firebase.auth.FacebookAuthProvider
-            .credential(accessTokenData.accessToken);
-          firebase.auth().signInWithCredential(credential).then(user => {
-                loginUserSuccess(dispatch, user);
-          })
-          .catch(() => loginUserFail(dispatch));
-        } else loginUserInitial(dispatch);
+          //Go for firebase
+          loginFirebase(dispatch);
+        } else {
+          loginUserInitial(dispatch);
+          return;
+        }
       });
   };
 };
