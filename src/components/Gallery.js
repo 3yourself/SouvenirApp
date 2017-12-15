@@ -24,7 +24,7 @@ class Gallery extends Component {
   onButtonPress() {
     let invalid = false;
 
-    if (!this.state.selectedSource) {
+  if (!this.state.selectedSource) {
       invalid = true;
       this.setState({ selectImageContainerErrorStyle: styles.selectImageContainerErrorStyle });
     } else this.setState({ selectImageContainerErrorStyle: null });
@@ -52,7 +52,6 @@ class Gallery extends Component {
     });
     this.setState(INITIAL_STATE);
   }
-
 
   renderImagePicker() {
     if (!this.state.showImagePicker) return;

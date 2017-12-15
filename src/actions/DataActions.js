@@ -1,19 +1,16 @@
 import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Actions } from 'react-native-router-flux';
+import axios from 'axios';
 import { POSTS_FETCH_SUCCESS, STORIES_FETCH_SUCCESS, CREATE_POST_SUCCESS }
 from './types';
+import { BACKEND_URL } from '../Config';
+
 
 export const postsFetch = () => {
   const { currentUser } = firebase.auth();
   //console.log('postFetch');
   return (dispatch) => {
-        // firebase.database().ref(`/users/${currentUser.uid}/stories`)
-        //   .push({ name: 'Holidays go', date: '2017-12-01', link: 'https://g1.dcdn.lt/images/pix/280x170/yDBUiujPmYc/bitkoinai-bitcoin-75811753.jpg' })
-        //     .then(() => {
-        //       //dispatch({ type: EMPLOYEE_CREATE });
-        //       //Actions.employeeList({ type: 'reset' });
-        //     });
     firebase.database().ref(`/users/${currentUser.uid}/posts`)
       .on('value', snapshot => {
         dispatch({ type: POSTS_FETCH_SUCCESS, payload: snapshot.val() });
@@ -27,13 +24,7 @@ export const storiesFetch = () => {
   return (dispatch) => {
         //Add Story---------------->>>
         // firebase.database().ref(`/users/${currentUser.uid}/userStories`)
-        //   .push({ storyGenericUid: '-L044P6g-YIobVVeuiFD', name: 'My Eurotrip', date: '2017-12-01', link: "https://firebasestorage.googleapis.com/v0/b/souvenir-5000d.appspot.com/o/stories%2F1.jpg?alt=media&token=cbbe6bb3-f730-4d2c-aac4-1ece448c6a2d" })
-        //     .then(() => {
-        //     });
-
-        //Add User profile---------------->>>
-        // firebase.database().ref(`/users/${currentUser.uid}/profile`)
-        //   .set({ firstName: 'Audrius', lastName: 'Xw' })
+        //   .push({ storyGenericUid: '-L044qZdx7C6-mOp0Pxq', name: 'Weekend in the Dream', date: '2017-12-01', link: "https://firebasestorage.googleapis.com/v0/b/souvenir-5000d.appspot.com/o/stories%2F2.jpg?alt=media&token=6be82c06-8d1b-43df-8b69-1cb2065fea7f" })
         //     .then(() => {
         //     });
 
@@ -96,39 +87,21 @@ export const createPost = ({ uri,
         return imageRef.getDownloadURL();
       })
       .then((link) => {
-        //Push the post to users, including this user, as he is contributor
-        //First get the story contributos
-        firebase.database().ref(`/stories/${storyGenericUid}/users/contributors`)
-          .once('value')
-          .then((contributorSnapshot) => {
-            //then get story uid of contributors story
-            contributorSnapshot.val().forEach((userId) => {
-              console.log('userId', userId);
-              firebase.database().ref(`/users/${userId}/userStories/`)
-                .orderByChild('storyGenericUid')
-                .equalTo(storyGenericUid)
-                .once('value')
-                .then((storiesSnapshot) => {
-                  //finally insert contributors post
-                  firebase.database().ref(`/users/${userId}/posts/`)
-                    .push({
-                      link,
-                      date: timestamp,
-                      ownerID: currentUser.uid,
-                      owner: 'Rick James',
-                      storyUid: Object.keys(storiesSnapshot.val())[0],
-                      storyName,
-                      title
-                    });
-                  })
-                .catch((error) => {
-                  console.log('Failed to insert a post for a contributor', userId, error);
-                });
-            });
+        axios.post(BACKEND_URL, {
+            currentUser,
+            storyGenericUid,
+            link,
+            date: timestamp,
+            ownerID: currentUser.uid,
+            owner: 'Rick James',
+            storyName,
+            title
+          })
+          .then((response) => {
+            console.log(response);
           });
       })
       .then(() => {
-        console.log('Post pushed to users posts.');
         dispatch({ type: CREATE_POST_SUCCESS });
         Actions.callback({ key: 'home', type: 'jump' });
       })

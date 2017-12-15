@@ -1,0 +1,106 @@
+Rules:
+1. You can WRITE to users/${uid}/posts only if:
+  a. you are the users
+  b. you have a correct storyUid
+
+2. You can read user stories only if you are friends or if its your user stories.
+   As you will not be able to get user storyUid otherwise, you will not be able to post.
+
+3. You can read generic stories only if you are contributor in those.
+
+
+Actual JSONs are below:
+---------------------------------------------------------------------------
+--Everybody reads and writes
+---------------------------------------------------------------------------
+{
+  "rules": {
+    ".read": "auth !== null",
+    ".write": "auth !== null"
+  }
+}
+---------------------------------------------------------------------------
+--profile, fbFriends are only accessible to the user itself
+
+--posts can be read only by user itself
+--posts can only be created in the user catalog for the exact user story
+
+--userStory can be read if you are the user or his friend
+--userStories can only be created by user itself
+
+--story (generic) can only be read if you are a contributor
+--stories (generic) can be created by any autheticated user!!!!! TBD
+
+--no other catalog is accessible by default
+---------------------------------------------------------------------------
+
+{
+  "rules": {
+    "users": {
+      "$user": {
+        "profile": {
+          ".read": "auth.uid === $user",
+          ".write": "auth.uid === $user"
+        },
+        "fbFriends": {
+          ".read": "auth.uid === $user",
+          ".write": "auth.uid === $user"
+        },
+        "posts": {
+          ".read": "auth.uid === $user",
+          ".write": "(auth.uid !== null && root.child('users/' + $user + '/userStories').child(newData.child('storyUid').val()).exists())"
+        },
+        "userStories": {
+          ".read": "(auth.uid === $user || (auth.uid !== null && root.child('users/' + $user + '/fbFriends/' + root.child('users/' + auth.uid + '/profile/facebookId').val()).exists()))",
+          ".write": "auth.uid === $user",
+        }
+      }
+    },
+    "stories": {
+      ".write": "auth.uid !== null",
+      "$story": {
+      	".read": "auth.uid !== null && data.child('users/contributors').child(auth.uid).exists()"
+      }
+    }
+  }
+}
+
+---------------------------------------------------------------------------
+--Previous working version
+---------------------------------------------------------------------------
+{
+  "rules": {
+    "users": {
+      "$user": {
+        "profile": {
+          ".read": "auth.uid === $user",
+          ".write": "auth.uid === $user"
+        },
+        "fbFriends": {
+          ".read": "auth.uid === $user",
+          ".write": "auth.uid === $user"
+        },
+        "posts": {
+          ".read": "auth.uid === $user",
+          ".write": "auth.uid !== null"
+        },
+        "userStories": {
+          ".read": "(auth.uid === $user || (auth.uid !== null && root.child('users/' + $user + '/fbFriends/' + root.child('users/' + auth.uid + '/profile/facebookId').val()).exists()))",
+          ".write": "auth.uid === $user",
+        }
+      }
+    },
+    "stories": {
+      ".write": "auth.uid !== null",
+      "$story": {
+      	".read": "auth.uid !== null && data.child('users/contributors').child(auth.uid).exists()"
+      }
+    }
+  }
+}
+
+
+---------------------------------------------------------------------------
+--Rule archive
+---------------------------------------------------------------------------
+".read": "(auth.uid !== null && root.child('stories/' + data.child('storyGenericUid').val() + '/users/contributors/' + auth.uid).exists())"

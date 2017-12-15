@@ -26,6 +26,8 @@ const saveUserInfo = (error, result) => {
       profilePicture: result.picture.data.url
     });
   }
+
+  console.log('Success fetching user data: ', result);
 };
 
 //Get and save friends info from FB
@@ -35,7 +37,13 @@ const saveFriendsList = (error, result) => {
   } else {
     const { currentUser } = firebase.auth();
 
-    firebase.database().ref(`users/${currentUser.uid}/fbFriends`).set(result.data);
+    const friendsList = {};
+
+    result.data.forEach((friend) => {
+      friendsList[friend.id] = friend.name;
+    });
+
+    firebase.database().ref(`users/${currentUser.uid}/fbFriends`).set(friendsList);
 
     console.log('Success fetching friends data: ', result);
   }
@@ -59,6 +67,8 @@ const initializeUser = (dispatch, user) => {
     .addRequest(userInfoRequest)
     .addRequest(friendsListRequest)
     .addBatchCallback((error, result) => {
+      console.log('Batch result:', result);
+      console.log('User:', user);
       if (result) loginUserSuccess(dispatch, user);
       else loginUserFail(dispatch);
     })
