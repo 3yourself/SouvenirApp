@@ -83,6 +83,7 @@ const loginFirebase = (dispatch) => {
         firebase.auth().signInWithCredential(credential)
           .then(user => {
             //refresh user info
+            //console.log(user);
             initializeUser(dispatch, user);
           })
           .catch(() => loginUserFail(dispatch));

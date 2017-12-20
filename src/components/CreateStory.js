@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity, ListView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { CardSection, Spinner } from './common';
-import { createPost } from '../actions';
-import StoriesList from './StoriesList';
+import { createStory, friendsFetch } from '../actions';
 
 const INITIAL_STATE = { showImagePicker: false,
           uri: 'https://firebasestorage.googleapis.com/v0/b/souvenir-5000d.appspot.com/o/static%2FgalleryIcon.png?alt=media&token=501e14ac-9358-4701-aabc-60d5818de43e',
@@ -18,8 +18,18 @@ const INITIAL_STATE = { showImagePicker: false,
           selectImageContainerErrorStyle: null
         };
 
-class Gallery extends Component {
+class CreateStory extends Component {
   state = INITIAL_STATE;
+
+  componentWillMount() {
+    this.props.friendsFetch();
+
+    this.createDataSource(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.createDataSource(nextProps);
+  }
 
   onButtonPress() {
     let invalid = false;
@@ -29,10 +39,10 @@ class Gallery extends Component {
       this.setState({ selectImageContainerErrorStyle: styles.selectImageContainerErrorStyle });
     } else this.setState({ selectImageContainerErrorStyle: null });
 
-    if (!this.props.selectedStoryUid) {
-      invalid = true;
-      this.setState({ footerErrorStyle: styles.footerErrorStyle });
-    } else this.setState({ footerErrorStyle: null });
+    // if (!this.props.selectedStoryUid) {
+    //   invalid = true;
+    //   this.setState({ footerErrorStyle: styles.footerErrorStyle });
+    // } else this.setState({ footerErrorStyle: null });
 
     if (!this.state.titleValue) {
       invalid = true;
@@ -41,7 +51,7 @@ class Gallery extends Component {
 
     if (invalid) return;
 
-    this.props.createPost({
+    this.props.createStory({
       uri: this.state.uri,
       timestamp: this.state.timestamp,
       fileName: this.state.fileName,
@@ -50,6 +60,31 @@ class Gallery extends Component {
       storyGenericUid: this.props.selectedStoryGenericUid
     });
     this.setState(INITIAL_STATE);
+  }
+
+  onFriendPress() {
+
+  }
+
+
+  createDataSource({ friends }) {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+
+    this.dataSource = ds.cloneWithRows(friends);
+  }
+
+  renderRow(friend) {
+    return (
+      <View style={{ paddingTop: 2, paddingBottom: 2, paddingLeft: 5 }}>
+        <TouchableOpacity onPress={this.onFriendPress.bind(this)}>
+          <View>
+            <Text>{friend.name} </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   renderImagePicker() {
@@ -112,14 +147,10 @@ class Gallery extends Component {
   }
 
   render() {
-    if (this.props.posting) {
-      return <Spinner size="large" />;
-    }
-
     return (
       <View style={styles.containerStyle}>
         <CardSection style={styles.selectTextContainer}>
-          <Text style={styles.selectTextStyle}>Choose that Awesome Photo!</Text>
+          <Text style={styles.selectTextStyle}>Choose the Cover</Text>
         </CardSection>
 
         <CardSection
@@ -149,20 +180,26 @@ class Gallery extends Component {
           />
         </CardSection>
 
+        <CardSection style={styles.friendsListContainerStyle}>
+          <Text style={styles.friendsListLabelStyle}>Add friends to your story</Text>
+
+          <ListView
+            enableEmptySections
+            dataSource={this.dataSource}
+            renderRow={this.renderRow}
+          />
+        </CardSection>
+
         <CardSection style={styles.postButtonContainerStyle}>
           <TouchableOpacity onPress={this.onButtonPress.bind(this)} style={styles.postButtonStyle}>
             <Text style={styles.postTextStyle}>
-              Show me to others!
+              Let It Begin!
             </Text>
           </TouchableOpacity>
         </CardSection>
 
         <View>
           {this.renderImagePicker()}
-        </View>
-
-        <View style={[styles.footerStyle, this.state.footerErrorStyle]}>
-          <StoriesList />
         </View>
       </View>
     );
@@ -188,8 +225,8 @@ const styles = {
     width: 200
   },
   selectImageStyle: {
-    height: 200,
-    width: 200,
+    height: 120,
+    width: 120,
     borderRadius: 30,
     opacity: 0.3
   },
@@ -240,26 +277,28 @@ const styles = {
     borderBottomWidth: 0,
     borderColor: '#fcc2c2'
   },
-  footerStyle: {
-    zIndex: 10,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 55
+  friendsListContainerStyle: {
+    borderBottomWidth: 0,
+    paddingLeft: 12,
+    height: 180,
+    flexDirection: 'column'
   },
-  footerErrorStyle: {
-    borderLeftWidth: 8,
-    borderColor: '#fcc2c2'
+  friendsListLabelStyle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'grey'
   }
 };
 
 const mapStateToProps = (state) => {
-  const selectedStoryUid = state.selectedStory.uid;
-  const selectedStoryName = state.selectedStory.name;
-  const selectedStoryGenericUid = state.selectedStory.storyGenericUid;
-  const posting = state.postingStatus.posting;
+  const posting = state.creatingStoryStatus.posting;
 
-  return { selectedStoryUid, selectedStoryName, selectedStoryGenericUid, posting };
+  const friends = _.map(state.friends, (name, id) => {
+    //console.log(value, key);
+    return { name, id };
+  });
+
+  return { posting, friends };
 };
 
-export default connect(mapStateToProps, { createPost })(Gallery);
+export default connect(mapStateToProps, { createStory, friendsFetch })(CreateStory);

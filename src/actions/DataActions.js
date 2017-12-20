@@ -2,7 +2,7 @@ import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
-import { POSTS_FETCH_SUCCESS, STORIES_FETCH_SUCCESS, CREATE_POST_SUCCESS }
+import { POSTS_FETCH_SUCCESS, STORIES_FETCH_SUCCESS, CREATE_POST_SUCCESS, POSTING_IN_PROGRESS, CREATE_POST_FAILED, FRIENDS_FETCH_SUCCESS }
 from './types';
 import { BACKEND_URL } from '../Config';
 
@@ -14,6 +14,17 @@ export const postsFetch = () => {
     firebase.database().ref(`/users/${currentUser.uid}/posts`)
       .on('value', snapshot => {
         dispatch({ type: POSTS_FETCH_SUCCESS, payload: snapshot.val() });
+      });
+  };
+};
+
+export const friendsFetch = () => {
+  const { currentUser } = firebase.auth();
+  return (dispatch) => {
+    firebase.database().ref(`/users/${currentUser.uid}/fbFriends`)
+      .once('value')
+      .then(snapshot => {
+        dispatch({ type: FRIENDS_FETCH_SUCCESS, payload: snapshot.val() });
       });
   };
 };
@@ -50,10 +61,9 @@ export const storiesFetch = () => {
 };
 
 export const createPost = ({ uri,
-                             timestamp = '2000-01-01',
+                             timestamp = firebase.database.ServerValue.TIMESTAMP,
                              fileName,
                              title,
-                             storyName,
                              storyGenericUid
                            }) => {
   const fileRef = timestamp + '__' + fileName;
@@ -68,11 +78,11 @@ export const createPost = ({ uri,
   let uploadBlob = null;
   const mime = 'image/jpg';
 
-  //console.log('Before disptach');
-
   const { currentUser } = firebase.auth();
 
   return (dispatch) => {
+    dispatch({ type: POSTING_IN_PROGRESS });
+
     const imageRef = firebase.storage().ref('posts').child(fileRef);
     fs.readFile(uri, 'base64')
       .then((data) => {
@@ -87,14 +97,10 @@ export const createPost = ({ uri,
         return imageRef.getDownloadURL();
       })
       .then((link) => {
-        axios.post(BACKEND_URL, {
+        axios.post(BACKEND_URL + 'createPost', {
             currentUser,
             storyGenericUid,
             link,
-            date: timestamp,
-            ownerID: currentUser.uid,
-            owner: 'Rick James',
-            storyName,
             title
           })
           .then((response) => {
@@ -106,57 +112,66 @@ export const createPost = ({ uri,
         Actions.callback({ key: 'home', type: 'jump' });
       })
       .catch((error) => {
+        dispatch({ type: CREATE_POST_FAILED });
         console.log(error);
       });
   };
 };
 
+export const createStory = ({ uri,
+                             timestamp = firebase.database.ServerValue.TIMESTAMP,
+                             fileName,
+                             title,
+                             storyGenericUid
+                           }) => {
+  const fileRef = timestamp + '__' + fileName;
 
-// export const employeeSave = ({ name, phone, shift, uid }) => {
-//   const { currentUser } = firebase.auth();
-//
-//   return (dispatch) => {
-//     firebase.database().ref(`/users/${currentUser.uid}/employees/${uid}`)
-//       .set({ name, phone, shift })
-//       .then(() => {
-//         console.log('saved');
-//         dispatch({ type: EMPLOYEE_SAVE_SUCCESS });
-//         Actions.employeeList({ type: 'reset' });
-//       });
-//   };
-// };
-
-// export const employeeDelete = ({ uid }) => {
-//   const { currentUser } = firebase.auth();
-//
-//   return (dispatch) => {
-//     firebase.database().ref(`/users/${currentUser.uid}/employees/${uid}`)
-//       .remove()
-//         .then(() => {
-//           Actions.employeeList({ type: 'reset' });
-//         });
-//   };
-// };
-
-
-// export const employeeUpdate = ({ prop, value }) => {
-//   //console.log(value + ' ' + prop);
-//   return {
-//     type: EMPLOYEE_UPDATE,
-//     payload: { prop, value }
-//   };
-// };
-
-// export const employeeCreate = ({ name, phone, shift }) => {
-//   //console.log(name, phone, shift);
-//   const { currentUser } = firebase.auth();
-//
-//   return (dispatch) => {
-//     firebase.database().ref(`/users/${currentUser.uid}/employees`)
-//       .push({ name, phone, shift })
-//         .then(() => {
-//           dispatch({ type: EMPLOYEE_CREATE });
-//           Actions.employeeList({ type: 'reset' });
-//         });
-//   };
-// };
+  // const Blob = RNFetchBlob.polyfill.Blob;
+  // const fs = RNFetchBlob.fs;
+  //
+  // //God knows what is this..
+  // window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+  // window.Blob = Blob
+  //
+  // let uploadBlob = null;
+  // const mime = 'image/jpg';
+  //
+  // const { currentUser } = firebase.auth();
+  //
+  // return (dispatch) => {
+  //   dispatch({ type: POSTING_IN_PROGRESS });
+  //
+  //   const imageRef = firebase.storage().ref('posts').child(fileRef);
+  //   fs.readFile(uri, 'base64')
+  //     .then((data) => {
+  //       return Blob.build(data, { type: `${mime};BASE64` });
+  //   })
+  //   .then((blob) => {
+  //       uploadBlob = blob;
+  //       return imageRef.put(blob, { contentType: mime });
+  //     })
+  //     .then(() => {
+  //       uploadBlob.close();
+  //       return imageRef.getDownloadURL();
+  //     })
+  //     .then((link) => {
+  //       axios.post(BACKEND_URL + 'createPost', {
+  //           currentUser,
+  //           storyGenericUid,
+  //           link,
+  //           title
+  //         })
+  //         .then((response) => {
+  //           console.log(response);
+  //         });
+  //     })
+  //     .then(() => {
+  //       dispatch({ type: CREATE_POST_SUCCESS });
+  //       Actions.callback({ key: 'home', type: 'jump' });
+  //     })
+  //     .catch((error) => {
+  //       dispatch({ type: CREATE_POST_FAILED });
+  //       console.log(error);
+  //     });
+  // };
+};

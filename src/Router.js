@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm';
 import HomeScreen from './components/HomeScreen';
 import Gallery from './components/Gallery';
 import UserProfile from './components/UserProfile';
+import CreateStory from './components/CreateStory';
 
 const tabImage = ({ selected, iconName }) => {
     return (
@@ -46,6 +47,8 @@ const RouterComponent = () => {
           <Scene key="share" title="Share" iconName="share" icon={tabImage} >
             <Scene key="gallery" component={Gallery} title="Share a Card" />
           </Scene>
+
+          <Scene key='createStory' component={CreateStory} title='Create the Story' />
         </Scene>
       </Scene>
     </Router>
