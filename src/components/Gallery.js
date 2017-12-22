@@ -171,7 +171,7 @@ class Gallery extends Component {
 
 const styles = {
   containerStyle: {
-      paddingTop: 70,
+      paddingTop: 55,
       flex: 1,
       flexDirection: 'column',
       justifyContent: 'flex-start'
@@ -245,7 +245,7 @@ const styles = {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 55
+    bottom: 3
   },
   footerErrorStyle: {
     borderLeftWidth: 8,

@@ -28,10 +28,15 @@ compile project(':react-native-fetch-blob')
 FB: test users:
 paxesrvmmk_1512984596@tfbnw.net / Nenervink / Jennifer Albcejgafbjfi Wongstein
 bfyyqqdlhc_1513176195@tfbnw.net / Nenervink / Mike Albcdehjfjbhf Huiwitz
-zkdzwmcqmc_1513176390@tfbnw.net / Nenervink / Elizabeth Albcchibbajab Laverdetstein
+elizabeth_nvrgnxv_laverdetsteinnn@tfbnw.net / Nenervink / Elizabeth Albcchibbajab Laverdetstein
 
 ---------------------------------------------------------
 -----------<<<<<<<<<<>>>>>>>>>>>>>>>>--------------------
 ---------------------------------------------------------
 me?fields=id,last_name,first_name,email,picture
 me/friends
+
+---------------------------------------------------------
+-----------<<<<<<<<<<>>>>>>>>>>>>>>>>--------------------
+---------------------------------------------------------
+firebase serve --only functions

@@ -34,7 +34,7 @@ class StoryItem extends Component {
     const { name, uid, storyGenericUid } = this.props.story;
     //console.log(this.props.story);
     return (
-      <TouchableHighlight onPress={() => this.props.s({ uid, name, storyGenericUid })}>
+      <TouchableHighlight onPress={() => this.props.selectStory({ uid, name, storyGenericUid })}>
         {this.renderStory()}
       </TouchableHighlight>
     );

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import firebase from 'firebase';
 import { logoutUser } from '../actions';
 import { Spinner } from './common';
 
@@ -25,6 +26,9 @@ class UserProfile extends Component {
     return (
       <View style={styles.container}>
         {this.renderButton()}
+        <Text>
+          {firebase.auth().currentUser.displayName}
+        </Text>
       </View>
     );
   }

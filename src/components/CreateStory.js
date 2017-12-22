@@ -14,8 +14,8 @@ const INITIAL_STATE = { showImagePicker: false,
           selectedSource: '',
           reqValueMissing: false,
           titleInputContainerErrorStyle: null,
-          footerErrorStyle: null,
-          selectImageContainerErrorStyle: null
+          selectImageContainerErrorStyle: null,
+          selectedFriends: []
         };
 
 class CreateStory extends Component {
@@ -39,11 +39,6 @@ class CreateStory extends Component {
       this.setState({ selectImageContainerErrorStyle: styles.selectImageContainerErrorStyle });
     } else this.setState({ selectImageContainerErrorStyle: null });
 
-    // if (!this.props.selectedStoryUid) {
-    //   invalid = true;
-    //   this.setState({ footerErrorStyle: styles.footerErrorStyle });
-    // } else this.setState({ footerErrorStyle: null });
-
     if (!this.state.titleValue) {
       invalid = true;
       this.setState({ titleInputContainerErrorStyle: styles.titleInputContainerErrorStyle });
@@ -56,16 +51,26 @@ class CreateStory extends Component {
       timestamp: this.state.timestamp,
       fileName: this.state.fileName,
       title: this.state.titleValue,
-      storyUid: this.props.selectedStoryUid,
-      storyGenericUid: this.props.selectedStoryGenericUid
+      friends: this.state.selectedFriends
     });
     this.setState(INITIAL_STATE);
   }
 
-  onFriendPress() {
+  onFriendPress(id) {
+    const newFriends = [...this.state.selectedFriends];
+    const index = newFriends.indexOf(id);
 
+    console.log(index);
+
+    if (index === -1) {
+      newFriends.push(id);
+    } else {
+      newFriends.splice(index, 1);
+    }
+
+    this.setState({ selectedFriends: newFriends });
+    console.log(newFriends);
   }
-
 
   createDataSource({ friends }) {
     const ds = new ListView.DataSource({
@@ -76,11 +81,21 @@ class CreateStory extends Component {
   }
 
   renderRow(friend) {
+    const { id, name } = friend;
+
+    let style = null;
+
+    if (this.state.selectedFriends.indexOf(id) !== -1) {
+      style = {
+        backgroundColor: 'grey'
+      };
+    }
+
     return (
-      <View style={{ paddingTop: 2, paddingBottom: 2, paddingLeft: 5 }}>
-        <TouchableOpacity onPress={this.onFriendPress.bind(this)}>
-          <View>
-            <Text>{friend.name} </Text>
+      <View style={[{ paddingTop: 2, paddingBottom: 2, paddingLeft: 5 }]}>
+        <TouchableOpacity onPress={() => this.onFriendPress(id)}>
+          <View style={[style]}>
+            <Text>{name}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -147,6 +162,10 @@ class CreateStory extends Component {
   }
 
   render() {
+    if (this.props.posting) {
+      return <Spinner size="large" />;
+    }
+
     return (
       <View style={styles.containerStyle}>
         <CardSection style={styles.selectTextContainer}>
@@ -186,7 +205,7 @@ class CreateStory extends Component {
           <ListView
             enableEmptySections
             dataSource={this.dataSource}
-            renderRow={this.renderRow}
+            renderRow={this.renderRow.bind(this)}
           />
         </CardSection>
 
@@ -294,7 +313,6 @@ const mapStateToProps = (state) => {
   const posting = state.creatingStoryStatus.posting;
 
   const friends = _.map(state.friends, (name, id) => {
-    //console.log(value, key);
     return { name, id };
   });
 

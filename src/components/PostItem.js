@@ -43,7 +43,7 @@ class PostItem extends Component {
 
 const styles = {
   titleStyle: {
-    fontSize: 18,
+    fontSize: 15,
     paddingLeft: 15
   },
   imageStyle: {
@@ -52,14 +52,14 @@ const styles = {
     width: null
   },
   ownerStyle: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: 'bold'
   },
   textStyle: {
-    fontSize: 15
+    fontSize: 12
   },
   storyStyle: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: 'bold',
     color: 'navy',
     textDecorationLine: 'underline'

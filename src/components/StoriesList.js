@@ -19,14 +19,14 @@ class StoriesList extends Component {
 
 
   onCreateNewStoryPress() {
-    Actions.createStory();
+    Actions.push('createStory');
   }
 
   createDataSource({ stories }) {
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
-    
+
     this.dataSource = ds.cloneWithRows(stories);
   }
 

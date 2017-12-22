@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import axios from 'axios';
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import {
   LOGIN_USER_SUCCESS,
@@ -9,6 +10,8 @@ import {
   LOGOUT_USER_SUCCESS,
   LOGIN_USER_INITIAL
 } from './types';
+import { BACKEND_URL } from '../Config';
+
 
 //Get and save user info from FB
 const saveUserInfo = (error, result) => {
@@ -43,7 +46,16 @@ const saveFriendsList = (error, result) => {
       friendsList[friend.id] = friend.name;
     });
 
-    firebase.database().ref(`users/${currentUser.uid}/fbFriends`).set(friendsList);
+    axios.post(BACKEND_URL + 'initUser', {
+                currentUser,
+                friendsList
+          })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch(
+
+      );
 
     console.log('Success fetching friends data: ', result);
   }
@@ -150,7 +162,7 @@ const loginUserInitial = (dispatch) => {
 const loginUserSuccess = (dispatch, user) => {
   createUserProfile(user);
 
-  Actions.main();
+  Actions.homeScreen();
 
   dispatch({
     type: LOGIN_USER_SUCCESS,
