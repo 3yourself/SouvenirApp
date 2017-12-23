@@ -24,7 +24,7 @@ const saveUserInfo = (error, result) => {
       facebookId: result.id,
       firstName: result.first_name,
       lastName: result.last_name,
-      middleName: result.middle_name,
+      //middleName: result.middle_name,
       email: result.email,
       profilePicture: result.picture.data.url
     });
