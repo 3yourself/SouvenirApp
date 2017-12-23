@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity, ListView } from 'react-native';
+import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity, ListView, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { CardSection, Spinner } from './common';
+import { Spinner } from './common';
 import { createStory, friendsFetch } from '../actions';
 
+const galleryDefaultImage = require('../../res/static/galleryDefaultImage.png');
+
 const INITIAL_STATE = { showImagePicker: false,
-          uri: 'https://firebasestorage.googleapis.com/v0/b/souvenir-5000d.appspot.com/o/static%2FgalleryIcon.png?alt=media&token=501e14ac-9358-4701-aabc-60d5818de43e',
           timestamp: '',
           fileName: '',
           titleValue: '',
@@ -145,7 +146,7 @@ class CreateStory extends Component {
   }
 
   renderSelectedImage() {
-    let source = { uri: this.state.uri };
+    let source = galleryDefaultImage;
     const style = styles.selectImageStyle;
 
     if (this.state.selectedSource) {
@@ -167,12 +168,12 @@ class CreateStory extends Component {
     }
 
     return (
-      <View style={styles.containerStyle}>
-        <CardSection style={styles.selectTextContainer}>
+      <KeyboardAvoidingView style={styles.containerStyle}>
+        <View style={styles.selectTextContainer}>
           <Text style={styles.selectTextStyle}>Choose the Cover</Text>
-        </CardSection>
+        </View>
 
-        <CardSection
+        <View
           style={[styles.selectImageContainerStyle, this.state.selectImageContainerErrorStyle]}
         >
           <TouchableHighlight
@@ -182,11 +183,11 @@ class CreateStory extends Component {
           >
             {this.renderSelectedImage()}
           </TouchableHighlight>
-        </CardSection>
+        </View>
 
         <View style={{ height: 5 }} />
 
-        <CardSection
+        <View
           style={[styles.titleInputContainerStyle, this.state.titleInputContainerErrorStyle]}
         >
           <TextInput
@@ -197,9 +198,9 @@ class CreateStory extends Component {
             onChangeText={(text) => this.setState({ titleValue: text })}
             value={this.state.titleValue}
           />
-        </CardSection>
+        </View>
 
-        <CardSection style={styles.friendsListContainerStyle}>
+        <View style={styles.friendsListContainerStyle}>
           <Text style={styles.friendsListLabelStyle}>Add friends to your story</Text>
 
           <ListView
@@ -207,41 +208,44 @@ class CreateStory extends Component {
             dataSource={this.dataSource}
             renderRow={this.renderRow.bind(this)}
           />
-        </CardSection>
+        </View>
 
-        <CardSection style={styles.postButtonContainerStyle}>
+        <View style={styles.postButtonContainerStyle}>
           <TouchableOpacity onPress={this.onButtonPress.bind(this)} style={styles.postButtonStyle}>
             <Text style={styles.postTextStyle}>
               Let It Begin!
             </Text>
           </TouchableOpacity>
-        </CardSection>
+        </View>
 
         <View>
           {this.renderImagePicker()}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = {
   containerStyle: {
-      paddingTop: 70,
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'flex-start'
+    paddingTop: 70,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+
+  selectTextContainer: {
+    alignItems: 'center',
+    borderBottomWidth: 0
   },
   selectTextStyle: {
     fontSize: 24,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: 20
   },
-  selectTextContainer: {
-    justifyContent: 'center',
-    borderBottomWidth: 0
-  },
-  buttonStyle: {
-    width: 200
+
+  selectImageContainerStyle: {
+    alignItems: 'center'
   },
   selectImageStyle: {
     height: 120,
@@ -249,53 +253,25 @@ const styles = {
     borderRadius: 30,
     opacity: 0.3
   },
-  selectImageContainerStyle: {
-    justifyContent: 'center',
-    borderBottomWidth: 0
-  },
   selectImageContainerErrorStyle: {
     borderLeftWidth: 8,
     borderColor: '#fcc2c2'
   },
-  postButtonContainerStyle: {
-    borderBottomWidth: 0,
-    paddingTop: 40,
-    alignSelf: 'center'
-  },
-  postButtonStyle: {
-    flex: 0.8,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'grey',
-    marginLeft: 5,
-    marginRight: 5,
-    height: 50
-  },
-  postTextStyle: {
-    alignSelf: 'center',
-    color: 'grey',
-    fontSize: 16,
-    fontWeight: '600',
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  titleInputStyle: {
-    height: 60,
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
+
   titleInputContainerStyle: {
+    height: 60,
     justifyContent: 'center',
     borderBottomWidth: 0
+  },
+  titleInputStyle: {
+    alignItems: 'center'
   },
   titleInputContainerErrorStyle: {
     borderLeftWidth: 8,
     borderBottomWidth: 0,
     borderColor: '#fcc2c2'
   },
+
   friendsListContainerStyle: {
     borderBottomWidth: 0,
     paddingLeft: 12,
@@ -306,6 +282,27 @@ const styles = {
     fontSize: 14,
     fontWeight: '600',
     color: 'grey'
+  },
+
+  postButtonContainerStyle: {
+    bottom: 20,
+    alignItems: 'center'
+  },
+  postButtonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'grey'
+  },
+  postTextStyle: {
+    color: 'grey',
+    fontSize: 16,
+    fontWeight: '600',
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginLeft: 20,
+    marginRight: 20,
   }
 };
 

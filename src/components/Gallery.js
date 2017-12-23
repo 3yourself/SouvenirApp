@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import { CardSection, Spinner } from './common';
 import { createPost } from '../actions';
 import StoriesList from './StoriesList';
 
+const galleryDefaultImage = require('../../res/static/galleryDefaultImage.png');
+
 const INITIAL_STATE = { showImagePicker: false,
-          uri: 'https://firebasestorage.googleapis.com/v0/b/souvenir-5000d.appspot.com/o/static%2FgalleryIcon.png?alt=media&token=501e14ac-9358-4701-aabc-60d5818de43e',
           timestamp: '',
           fileName: '',
           titleValue: '',
@@ -56,7 +57,7 @@ class Gallery extends Component {
     if (!this.state.showImagePicker) return;
 
     const options = {
-      title: 'Select Avatar',
+      title: 'Select Photo',
       customButtons: [
         { name: 'fb', title: 'Choose Photo from Facebook' },
       ],
@@ -95,7 +96,7 @@ class Gallery extends Component {
   }
 
   renderSelectedImage() {
-    let source = { uri: this.state.uri };
+    let source = galleryDefaultImage;
     const style = styles.selectImageStyle;
 
     if (this.state.selectedSource) {
@@ -117,12 +118,12 @@ class Gallery extends Component {
     }
 
     return (
-      <View style={styles.containerStyle}>
-        <CardSection style={styles.selectTextContainer}>
+      <KeyboardAvoidingView behavior="padding" style={styles.containerStyle}>
+        <View style={styles.selectTextContainer}>
           <Text style={styles.selectTextStyle}>Choose that Awesome Photo!</Text>
-        </CardSection>
+        </View>
 
-        <CardSection
+        <View
           style={[styles.selectImageContainerStyle, this.state.selectImageContainerErrorStyle]}
         >
           <TouchableHighlight
@@ -132,11 +133,9 @@ class Gallery extends Component {
           >
             {this.renderSelectedImage()}
           </TouchableHighlight>
-        </CardSection>
+        </View>
 
-        <View style={{ height: 5 }} />
-
-        <CardSection
+        <View
           style={[styles.titleInputContainerStyle, this.state.titleInputContainerErrorStyle]}
         >
           <TextInput
@@ -147,15 +146,15 @@ class Gallery extends Component {
             onChangeText={(text) => this.setState({ titleValue: text })}
             value={this.state.titleValue}
           />
-        </CardSection>
+        </View>
 
-        <CardSection style={styles.postButtonContainerStyle}>
+        <View style={styles.postButtonContainerStyle}>
           <TouchableOpacity onPress={this.onButtonPress.bind(this)} style={styles.postButtonStyle}>
             <Text style={styles.postTextStyle}>
               Show me to others!
             </Text>
           </TouchableOpacity>
-        </CardSection>
+        </View>
 
         <View>
           {this.renderImagePicker()}
@@ -164,88 +163,76 @@ class Gallery extends Component {
         <View style={[styles.footerStyle, this.state.footerErrorStyle]}>
           <StoriesList />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = {
   containerStyle: {
-      paddingTop: 55,
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'flex-start'
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+
+  selectTextContainer: {
+    paddingTop: 5,
+    alignItems: 'center',
   },
   selectTextStyle: {
     fontSize: 24,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: 20
   },
-  selectTextContainer: {
-    justifyContent: 'center',
-    borderBottomWidth: 0
-  },
-  buttonStyle: {
-    width: 200
+
+  selectImageContainerStyle: {
+    alignItems: 'center'
   },
   selectImageStyle: {
-    height: 200,
-    width: 200,
+    height: 150,
+    width: 150,
     borderRadius: 30,
     opacity: 0.3
-  },
-  selectImageContainerStyle: {
-    justifyContent: 'center',
-    borderBottomWidth: 0
   },
   selectImageContainerErrorStyle: {
     borderLeftWidth: 8,
     borderColor: '#fcc2c2'
   },
-  postButtonContainerStyle: {
-    borderBottomWidth: 0,
-    paddingTop: 40,
-    alignSelf: 'center'
-  },
-  postButtonStyle: {
-    flex: 0.8,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'grey',
-    marginLeft: 5,
-    marginRight: 5,
-    height: 50
-  },
-  postTextStyle: {
-    alignSelf: 'center',
-    color: 'grey',
-    fontSize: 16,
-    fontWeight: '600',
-    paddingTop: 10,
-    paddingBottom: 10
+
+  titleInputContainerStyle: {
+    height: 60
   },
   titleInputStyle: {
-    height: 60,
-    flex: 1,
-    flexDirection: 'row',
     alignItems: 'center'
-  },
-  titleInputContainerStyle: {
-    justifyContent: 'center',
-    borderBottomWidth: 0
   },
   titleInputContainerErrorStyle: {
     borderLeftWidth: 8,
     borderBottomWidth: 0,
     borderColor: '#fcc2c2'
   },
+
+  postButtonContainerStyle: {
+    alignItems: 'center'
+  },
+  postButtonStyle: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'grey'
+  },
+  postTextStyle: {
+    color: 'grey',
+    fontSize: 16,
+    fontWeight: '600',
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+
   footerStyle: {
-    zIndex: 10,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 3
+
   },
   footerErrorStyle: {
     borderLeftWidth: 8,

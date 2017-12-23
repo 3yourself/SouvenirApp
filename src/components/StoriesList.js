@@ -6,6 +6,8 @@ import { Actions } from 'react-native-router-flux';
 import StoryItem from './StoryItem';
 import { storiesFetch } from '../actions';
 
+const addIcon = require('../../res/static/addIcon.png');
+
 class StoriesList extends Component {
   componentWillMount() {
     this.props.storiesFetch();
@@ -49,7 +51,7 @@ class StoriesList extends Component {
         <View style={styles.createNewStoryContainerStyle}>
           <TouchableOpacity onPress={this.onCreateNewStoryPress.bind(this)}>
             <View style={styles.createNewStoryTouchableStyle}>
-              <Image source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/souvenir-5000d.appspot.com/o/static%2FaddStoryIcon.png?alt=media&token=b9d9461f-f06d-4101-8008-5a10f82d3a5b' }} style={styles.createNewStoryIconImageStyle} />
+              <Image source={addIcon} style={styles.createNewStoryIconImageStyle} />
               <Text style={styles.nameStyle}>Create Story</Text>
             </View>
           </TouchableOpacity >

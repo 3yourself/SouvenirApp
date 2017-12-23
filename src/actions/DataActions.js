@@ -41,12 +41,11 @@ export const storiesFetch = () => {
 };
 
 export const createPost = ({ uri,
-                             timestamp = firebase.database.ServerValue.TIMESTAMP,
                              fileName,
                              title,
                              storyGenericUid
                            }) => {
-  const fileRef = timestamp + '__' + fileName;
+  const fileRef = firebase.database.ServerValue.TIMESTAMP + '__' + fileName;
 
   const Blob = RNFetchBlob.polyfill.Blob;
   const fs = RNFetchBlob.fs;
@@ -89,7 +88,8 @@ export const createPost = ({ uri,
       })
       .then(() => {
         dispatch({ type: CREATE_POST_SUCCESS });
-        Actions.callback({ key: 'homeScreen', type: 'jump' });
+        console.log('trying jump');
+        Actions.jump('homeScreen');
       })
       .catch((error) => {
         dispatch({ type: CREATE_POST_FAILED });
@@ -99,7 +99,6 @@ export const createPost = ({ uri,
 };
 
 export const createStory = ({ uri,
-                             timestamp = firebase.database.ServerValue.TIMESTAMP,
                              fileName,
                              title,
                              friends
@@ -107,7 +106,7 @@ export const createStory = ({ uri,
   return (dispatch) => {
     dispatch({ type: CREATING_STORY_IN_PROGRESS });
 
-    const fileRef = timestamp + '__' + fileName;
+    const fileRef = firebase.database.ServerValue.TIMESTAMP + '__' + fileName;
 
     const Blob = RNFetchBlob.polyfill.Blob;
     const fs = RNFetchBlob.fs;
