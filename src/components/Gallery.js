@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Image, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
-import { CardSection, Spinner } from './common';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Spinner } from './common';
 import { createPost } from '../actions';
 import StoriesList from './StoriesList';
 
@@ -25,7 +26,7 @@ class Gallery extends Component {
   onButtonPress() {
     let invalid = false;
 
-  if (!this.state.selectedSource) {
+    if (!this.state.selectedSource) {
       invalid = true;
       this.setState({ selectImageContainerErrorStyle: styles.selectImageContainerErrorStyle });
     } else this.setState({ selectImageContainerErrorStyle: null });
@@ -58,9 +59,9 @@ class Gallery extends Component {
 
     const options = {
       title: 'Select Photo',
-      customButtons: [
-        { name: 'fb', title: 'Choose Photo from Facebook' },
-      ],
+      // customButtons: [
+      //   { name: 'fb', title: 'Choose Photo from Facebook' },
+      // ],
       storageOptions: {
         skipBackup: true,
         path: 'images'
@@ -118,9 +119,9 @@ class Gallery extends Component {
     }
 
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.containerStyle}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.containerStyle}>
         <View style={styles.selectTextContainer}>
-          <Text style={styles.selectTextStyle}>Choose that Awesome Photo!</Text>
+          <Text style={styles.selectTextStyle}>Pick a Photo for Your Card</Text>
         </View>
 
         <View
@@ -151,7 +152,7 @@ class Gallery extends Component {
         <View style={styles.postButtonContainerStyle}>
           <TouchableOpacity onPress={this.onButtonPress.bind(this)} style={styles.postButtonStyle}>
             <Text style={styles.postTextStyle}>
-              Show me to others!
+              Save the Memory
             </Text>
           </TouchableOpacity>
         </View>
@@ -163,7 +164,7 @@ class Gallery extends Component {
         <View style={[styles.footerStyle, this.state.footerErrorStyle]}>
           <StoriesList />
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -227,12 +228,12 @@ const styles = {
     fontWeight: '600',
     paddingTop: 10,
     paddingBottom: 10,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 40,
+    marginRight: 40,
   },
 
   footerStyle: {
-
+    bottom: 3
   },
   footerErrorStyle: {
     borderLeftWidth: 8,

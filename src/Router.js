@@ -8,50 +8,51 @@ import Gallery from './components/Gallery';
 import Stories from './components/Stories';
 import UserProfile from './components/UserProfile';
 import CreateStory from './components/CreateStory';
+import THEME_COLOR_DARK from './Config';
 
 
-const home = ({ selected }) => {
+const home = ({ focused }) => {
     return (
         <View>
             <Icon
                 name='home'
-                color={selected ? '#473332' : '#000000'}
+                color={focused ? 'teal' : '#4a4a4a'}
                 size={35}
             />
         </View>
     );
 };
 
-const share = ({ selected }) => {
+const share = ({ focused }) => {
     return (
         <View>
             <Icon
                 name='envelope-open'
-                color={selected ? '#473332' : '#000000'}
+                color={focused ? 'teal' : '#4a4a4a'}
                 size={26}
             />
         </View>
     );
 };
 
-const stories = ({ selected }) => {
+const stories = ({ focused }) => {
     return (
         <View>
             <Icon
                 name='book'
-                color={selected ? '#473332' : '#000000'}
+                color={focused ? 'teal' : '#4a4a4a'}
                 size={27}
             />
         </View>
     );
 };
 
-const profile = ({ selected }) => {
+const profile = ({ focused }) => {
     return (
         <View>
             <Icon
                 name='user-circle'
-                color={selected ? '#473332' : '#000000'}
+                color={focused ? 'teal' : '#4a4a4a'}
                 size={28}
             />
         </View>
@@ -83,7 +84,7 @@ const RouterComponent = () => {
 const styles = {
   tabBarStyle: {
     backgroundColor: '#ffffff',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.8,
     borderBottomColor: 'grey',
     marginLeft: 5,
     marginRight: 5,

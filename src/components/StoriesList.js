@@ -65,13 +65,8 @@ const styles = {
   storiesContainerStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#ddd',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    //borderTopWidth: 1,
+    borderColor: 'grey',
     backgroundColor: '#F8F9F9',
     marginLeft: 5,
     marginRight: 5,
@@ -107,10 +102,15 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  const stories = _.map(state.stories, (val, uid) => {
+  let stories = _.map(state.stories, (val, uid) => {
     return { ...val, uid };
   });
 
+  if (stories.length > 5) {
+    console.log(stories);
+    stories = _.slice(stories, 0, 5);
+    return { stories };
+  }
   return { stories };
 };
 

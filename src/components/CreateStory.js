@@ -93,9 +93,9 @@ class CreateStory extends Component {
     }
 
     return (
-      <View style={[{ paddingTop: 2, paddingBottom: 2, paddingLeft: 5 }]}>
+      <View style={[{ paddingTop: 2, paddingBottom: 2, paddingLeft: 5, paddingRight: 50 }]}>
         <TouchableOpacity onPress={() => this.onFriendPress(id)}>
-          <View style={[style]}>
+          <View style={[style, { paddingLeft: 10, borderRadius: 2, marginLeft: 2, marginRight: 2 }]}>
             <Text>{name}</Text>
           </View>
         </TouchableOpacity>
@@ -194,6 +194,7 @@ class CreateStory extends Component {
             style={styles.titleInputStyle}
             placeholder='Put the title here..'
             multiline
+            autoCapitalize='sentences'
             numberOfLines={4}
             onChangeText={(text) => this.setState({ titleValue: text })}
             value={this.state.titleValue}

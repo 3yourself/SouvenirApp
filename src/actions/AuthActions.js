@@ -173,5 +173,5 @@ const loginUserSuccess = (dispatch, user) => {
 const logoutUserSuccess = (dispatch) => {
   dispatch({ type: LOGOUT_USER_SUCCESS });
 
-  Actions.auth();
+  Actions.login();
 };

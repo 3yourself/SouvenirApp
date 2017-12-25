@@ -5,17 +5,17 @@ import { connect } from 'react-redux';
 import { CachedImage } from 'react-native-img-cache';
 import { selectStory } from '../actions';
 
+
+
 class StoryItem extends Component {
   renderStory() {
     const { name, link, uid } = this.props.story;
 
     const style = {
-      paddingTop: 5,
-      flexDirection: 'column',
-      width: 57,
-      height: 80,
-      alignItems: 'center',
-      borderRadius: 3
+      flexDirection: 'row',
+      height: 55,
+      borderRadius: 3,
+      alignItems: 'center'
     };
 
     if (this.props.selectedStoryUid === uid) {
@@ -48,8 +48,8 @@ const styles = {
     borderRadius: 9
   },
   nameStyle: {
-    fontSize: 9,
-    paddingTop: 4,
+    paddingLeft: 10,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center'
   }

@@ -6,8 +6,17 @@ import { logoutUser } from '../actions';
 import { Spinner } from './common';
 
 class UserProfile extends Component {
+  componentWillMount() {
+    this.setState({ displayInfo: true });
+  }
+
   onButtonPress() {
+    this.setState({ displayInfo: false });
     this.props.logoutUser();
+  }
+
+  renderUserInfo() {
+    if (this.state.displayInfo) return firebase.auth().currentUser.displayName;
   }
 
   renderButton() {
@@ -27,7 +36,7 @@ class UserProfile extends Component {
       <View style={styles.container}>
         {this.renderButton()}
         <Text>
-          {firebase.auth().currentUser.displayName}
+          {this.renderUserInfo()}
         </Text>
       </View>
     );
