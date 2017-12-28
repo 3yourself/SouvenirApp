@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import { Platform } from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Actions } from 'react-native-router-flux';
 import ImageResizer from 'react-native-image-resizer';
@@ -66,8 +67,17 @@ export const createPost = ({ uri,
 
     ImageResizer.createResizedImage(uri, 800, 800, 'PNG', 100, 0, null)
      .then((resizedFileResponse) => {
-       console.log(resizedFileResponse);
-        fs.readFile(resizedFileResponse.uri, 'base64')
+       //On iOS platform the directory path will be changed every time you access to the file system.
+       //So if you need read file on iOS, you need to get dir path first and concat file name with it.
+       // fileUri is a string like "file:///var/mobile/Containers/Data/Application/9B754FAA-2588-4FEC-B0F7-6D890B7B4681/Documents/filename"
+       if (Platform.OS === 'ios') {
+         let arr = resizedFileResponse.uri.split('/');
+         const dirs = RNFetchBlob.fs.dirs;
+         filePath = `${dirs.CacheDir}/${arr[arr.length - 1]}`;
+       } else {
+         filePath = resizedFileResponse.uri;
+       }
+        fs.readFile(filePath, 'base64')
           .then((data) => {
             return Blob.build(data, { type: `${mime};BASE64` });
         })
@@ -127,12 +137,25 @@ export const createStory = ({ uri,
 
     ImageResizer.createResizedImage(uri, 300, 300, 'PNG', 100, 0, null)
      .then((resizedFileResponse) => {
-        fs.readFile(resizedFileResponse.uri, 'base64')
+       console.log('image resized');
+       console.log(resizedFileResponse);
+       //On iOS platform the directory path will be changed every time you access to the file system.
+       //So if you need read file on iOS, you need to get dir path first and concat file name with it.
+       // fileUri is a string like "file:///var/mobile/Containers/Data/Application/9B754FAA-2588-4FEC-B0F7-6D890B7B4681/Documents/filename"
+        if (Platform.OS === 'ios') {
+          let arr = resizedFileResponse.uri.split('/');
+          const dirs = RNFetchBlob.fs.dirs;
+          filePath = `${dirs.CacheDir}/${arr[arr.length - 1]}`;
+        } else {
+          filePath = resizedFileResponse.uri;
+        }
+        fs.readFile(filePath, 'base64')
           .then((data) => {
             return Blob.build(data, { type: `${mime};BASE64` });
         })
         .then((blob) => {
             uploadBlob = blob;
+            console.log('blod');
             return imageRef.put(blob, { contentType: mime });
           })
           .then(() => {
@@ -148,6 +171,9 @@ export const createStory = ({ uri,
               })
               .then((response) => {
                 console.log(response);
+              })
+              .catch((error) => {
+                console.log(error);
               });
           })
           .then(() => {

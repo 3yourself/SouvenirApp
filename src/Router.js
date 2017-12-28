@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { Scene, Router, Tabs } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LoginForm from './components/LoginForm';
@@ -65,7 +65,20 @@ const RouterComponent = () => {
       <Scene key="root">
         <Scene key="login" component={LoginForm} title="Login" />
 
-        <Tabs key="tabbar" tabBarStyle={styles.tabBarStyle} headerMode='none' init>
+        <Tabs
+          key="tabbar"
+          tabBarStyle={Platform.OS === 'ios' ? styles.tabBarIosStyle : styles.tabBarAndroidStyle}
+          labelStyle={styles.labelStyle}
+          iconStyle={Platform.OS === 'ios' ? styles.iconIosStyle : null}
+          headerMode='none'
+          init
+          tabBarPosition='top'
+          showIcon
+          upperCaseLabel={false}
+          activeTintColor='teal'
+          inactiveTintColor='#4a4a4a'
+          swipeEnabled
+        >
           <Scene key="homeScreen" component={HomeScreen} title="Home" icon={home} />
 
           <Scene key="gallery" component={Gallery} title="Share a Card" icon={share} />
@@ -82,7 +95,7 @@ const RouterComponent = () => {
 };
 
 const styles = {
-  tabBarStyle: {
+  tabBarAndroidStyle: {
     backgroundColor: '#ffffff',
     borderBottomWidth: 0.8,
     borderBottomColor: 'grey',
@@ -90,8 +103,25 @@ const styles = {
     marginRight: 5,
     marginBottom: 3
   },
+  tabBarIosStyle: {
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 0.8,
+    borderBottomColor: 'grey',
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 3,
+    paddingTop: 13,
+    height: 80
+  },
+  labelStyle: {
+    //color: 'teal'
+    fontSize: 10
+  },
   sceneStyle: {
     backgroundColor: '#ffffff'
+  },
+  iconIosStyle: {
+    width: 50
   }
 };
 

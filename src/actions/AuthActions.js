@@ -125,16 +125,22 @@ export const reloginUserFirst = () => {
   return (dispatch) => {
     dispatch({ type: LOGIN_USER });
 
-    AccessToken.getCurrentAccessToken()
-      .then((accessTokenData) => {
-        if (accessTokenData) {
-          //Go for firebase
-          loginFirebase(dispatch);
-        } else {
+    if (AccessToken) {
+      AccessToken.getCurrentAccessToken()
+        .then((accessTokenData) => {
+          if (accessTokenData) {
+            //Go for firebase
+            loginFirebase(dispatch);
+          } else {
+            loginUserInitial(dispatch);
+          }
+        })
+        .catch((error) => {
           loginUserInitial(dispatch);
-          return;
-        }
-      });
+        });
+    } else {
+      loginUserInitial(dispatch);
+    }
   };
 };
 
